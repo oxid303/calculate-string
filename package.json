@@ -1,0 +1,14 @@
+{
+  "name": "calculate-string",
+  "version": "1.0.0",
+  "description": "calculate string",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "oxid303",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^8.2.0"
+  }
+}
