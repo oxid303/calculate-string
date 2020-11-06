@@ -62,4 +62,52 @@ describe('Correct expression', () => {
   it('some expression', () => {
     assert.strictEqual(calculate('7 - 9 * (2 + 6 / 4) / (9 / (.05 * 60))'), -3.5);
   });
+
+  it('plus plus', () => {
+    assert.strictEqual(calculate('1 + + 1'), 2);
+  });
+
+  it('minus minus', () => {
+    assert.strictEqual(calculate('1 - - 1'), 2);
+  });
+
+  it('multiply on positive number', () => {
+    assert.strictEqual(calculate('2 * + 2'), 4);
+  });
+
+  it('multiply on negative number', () => {
+    assert.strictEqual(calculate('2 * - 2'), -4);
+  });
+
+  it('divide on positive number', () => {
+    assert.strictEqual(calculate('2 / + 2'), 1);
+  });
+
+  it('divide on negative number', () => {
+    assert.strictEqual(calculate('2 / - 2'), -1);
+  });
+
+  it('multiply on positive brackets', () => {
+    assert.strictEqual(calculate('2 * + (5)'), 10);
+  });
+
+  it('divide on negative brackets', () => {
+    assert.strictEqual(calculate('3 / - (6)'), -0.5);
+  });
+
+  it('brackets multiply on negative brackets', () => {
+    assert.strictEqual(calculate('-(-2) * - (7)'), -14);
+  });
+
+  it('brackets divide on positive brackets', () => {
+    assert.strictEqual(calculate('(3 ++ 1) / - (2)'), -2);
+  });
+
+  it('some expression', () => {
+    assert.strictEqual(calculate('7 * 7 * 2 / 2 / 7 / -7'), -1);
+  });
+
+  it('some expression', () => {
+    assert.strictEqual(calculate('-(-(+(-3)) + 2) / - (+5)'), 1);
+  });
 });

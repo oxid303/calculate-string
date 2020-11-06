@@ -23,8 +23,10 @@ const calculate = str => {
   let prevShift = true;
   let prevScaleNum = false;
   let prevScale = true;
+  let positive = true;
   let start = true;
-  let mathDisabled = true;
+  let scaleDisabled = true;
+  let shiftDisabled = true;
   let counter = 0;
 
   for (let i = 0; i < length; i++) {
@@ -36,15 +38,17 @@ const calculate = str => {
     } else if (nums.has(char)) {
       if (numDisabled) return false;
       start = false;
-      mathDisabled = false;
+      scaleDisabled = false;
+      shiftDisabled = false;
       currNum += char;
 
     } else if (scale.has(char)) {
-      if (mathDisabled || currNum === '.') return false;
+      if (scaleDisabled || currNum === '.') return false;
       start = false;
-      mathDisabled = true;
       numDisabled = false;
-      currNum = Number(currNum);
+      scaleDisabled = true;
+      currNum = positive ? Number(currNum) : -Number(currNum);
+      positive = true;
       if (prevScaleNum === false) {
         prevScaleNum = currNum;
       } else {
@@ -56,53 +60,62 @@ const calculate = str => {
       currNum = '';
 
     } else if (shift.has(char)) {
-      if (mathDisabled && !start || currNum === '.') return false;
+      if (scaleDisabled && !start && shiftDisabled || currNum === '.') return false;
       start = false;
-      mathDisabled = true;
       numDisabled = false;
-      if (currNum === '') {
-        prevShift = char === '+';
-        continue;
-      }
-      currNum = Number(currNum);
-      if (prevScaleNum === false) {
-        prevShiftNum = prevShift ?
-          prevShiftNum + currNum :
-          prevShiftNum - currNum;
+      if (scaleDisabled) {
+        shiftDisabled = true;
+        positive = char === '+';
       } else {
-        prevScaleNum = prevScale ?
-          prevScaleNum * currNum :
-          prevScaleNum / currNum;
-        prevShiftNum = prevShift ?
-          prevShiftNum + prevScaleNum :
-          prevShiftNum - prevScaleNum;
-        prevScaleNum = false;
+        scaleDisabled = true;
+        if (currNum === '') {
+          prevShift = char === '+';
+          continue;
+        }
+        currNum = positive ? Number(currNum) : -Number(currNum);
+        positive = true;
+        if (prevScaleNum === false) {
+          prevShiftNum = prevShift ?
+            prevShiftNum + currNum :
+            prevShiftNum - currNum;
+        } else {
+          prevScaleNum = prevScale ?
+            prevScaleNum * currNum :
+            prevScaleNum / currNum;
+          prevShiftNum = prevShift ?
+            prevShiftNum + prevScaleNum :
+            prevShiftNum - prevScaleNum;
+          prevScaleNum = false;
+        }
+        prevShift = char === '+';
+        currNum = '';
       }
-      prevShift = char === '+';
-      currNum = '';
 
     } else if (char === open) {
-      if (!mathDisabled) return false;
+      if (!scaleDisabled) return false;
       counter++;
       stack.push({
         prevShiftNum,
         prevShift,
         prevScaleNum,
         prevScale,
+        positive,
       });
       prevShiftNum = 0;
       prevShift = true;
       prevScaleNum = false;
       prevScale = true;
+      positive = true;
       start = true;
-      mathDisabled = true;
+      scaleDisabled = true;
+      shiftDisabled = true;
 
     } else if (char === closed) {
-      if (mathDisabled && !start || currNum === '.' || --counter < 0) return false;
+      if (scaleDisabled && !start || currNum === '.' || --counter < 0) return false;
       if (currNum === '') {
         currNum = prevShiftNum;
       }
-      currNum = Number(currNum);
+      currNum = positive ? Number(currNum) : -Number(currNum);
       if (prevScaleNum === false) {
         currNum = prevShift ?
           prevShiftNum + currNum :
@@ -120,13 +133,15 @@ const calculate = str => {
       prevShift = stackLast.prevShift;
       prevScaleNum = stackLast.prevScaleNum;
       prevScale = stackLast.prevScale;
+      positive = stackLast.positive;
       numDisabled = true;
       start = false;
-      mathDisabled = false;
+      scaleDisabled = false;
+      shiftDisabled = false;
 
     } else if (i === str.length) {
-      if (mathDisabled && !start || currNum === '.' || counter > 0) return false;
-      currNum = Number(currNum);
+      if (scaleDisabled && !start || currNum === '.' || counter > 0) return false;
+      currNum = positive ? Number(currNum) : -Number(currNum);
       if (prevScaleNum === false) {
         prevShiftNum = prevShift ?
           prevShiftNum + currNum :

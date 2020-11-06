@@ -51,11 +51,15 @@ describe('Wrong expression return false', () => {
     assert.strictEqual(calculate('(1 + 2) 3'), false);
   });
 
-  it('double math symbols (++)', () => {
-    assert.strictEqual(calculate('1 + + 1'), false);
+  it('triple math symbols', () => {
+    assert.strictEqual(calculate('1 + + + 1'), false);
   });
 
-  it('double math symbols (+*)', () => {
+  it('triple math symbols with multiply', () => {
+    assert.strictEqual(calculate('1 * + + 1'), false);
+  });
+
+  it('multiply after plus', () => {
     assert.strictEqual(calculate('1 + * 1'), false);
   });
 
@@ -63,11 +67,35 @@ describe('Wrong expression return false', () => {
     assert.strictEqual(calculate('*1 * 3'), false);
   });
 
+  it('start with double plus', () => {
+    assert.strictEqual(calculate('++33'), false);
+  });
+
+  it('start with double minus', () => {
+    assert.strictEqual(calculate('--31'), false);
+  });
+
+  it('start with double plus after bracket', () => {
+    assert.strictEqual(calculate('(++33)'), false);
+  });
+
   it('start with divide', () => {
     assert.strictEqual(calculate('/1 * 3'), false);
   });
 
+  it('start with divide after bracket', () => {
+    assert.strictEqual(calculate('(/1) * 3'), false);
+  });
+
+  it('double multiply', () => {
+    assert.strictEqual(calculate('2 ** 2'), false);
+  });
+
+  it('double divide', () => {
+    assert.strictEqual(calculate('2 // 2'), false);
+  });
+
   it('total incorrect string', () => {
-    assert.strictEqual(calculate('*) 1 ++ 2 (*3a /) )(0.. - 4 5 . )'), false);
+    assert.strictEqual(calculate('**) 1 ++/ 2 (*3a /) )(0.. - 4 5 . )'), false);
   });
 });
