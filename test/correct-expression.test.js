@@ -51,12 +51,12 @@ describe('Correct expression', () => {
     assert.strictEqual(calculate('   5   -2  *( 10 - 6 )  '), -3);
   });
 
-  it('some expression', () => {
-    assert.strictEqual(calculate('((-22 / .5 * (-.25)) + 3) * 5 + 3.1 * 10'), 101);
+  it('plus before brackets at the start', () => {
+    assert.strictEqual(calculate('+(21 + 1 + (3 + 2 * 9)) - 2 + (1 + (3 + 18))'), 63);
   });
 
-  it('some expression', () => {
-    assert.strictEqual(calculate('21 + (1 + (3 + 2 * 9)) - 2 + (1 + (3 + 18))'), 63);
+  it('minus between brackets', () => {
+    assert.strictEqual(calculate('(-(-22 / .5 * (-.25)) + 3) * 5 + 3.1 * 10'), -9);
   });
 
   it('some expression', () => {
